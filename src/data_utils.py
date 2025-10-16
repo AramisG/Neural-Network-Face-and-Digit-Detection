@@ -1,6 +1,5 @@
 """
 Data Loading and Preprocessing Utilities
-========================================
 Functions for loading ASCII art datasets and creating training subsets.
 """
 
@@ -34,18 +33,18 @@ def load_dataset(
         - images: np.ndarray of shape (n_samples, img_height * img_width)
         - labels: np.ndarray of shape (n_samples,)
     """
-    # Load labels
+    #Load labels
     with open(label_file, 'r') as f:
         labels = np.array([int(line.strip()) for line in f if line.strip()])
     
-    # Load images
+    #Load images
     with open(image_file, 'r') as f:
         lines = [line.rstrip('\n') for line in f if line.rstrip('\n')]
     
     images = []
     num_images = len(lines) // img_height
     
-    # Parse each image
+    #Parse each image
     for i in range(num_images):
         current_image_lines = lines[i * img_height:(i + 1) * img_height]
         img_array = np.zeros((img_height, img_width), dtype=np.float32)
@@ -59,7 +58,7 @@ def load_dataset(
         
         images.append(img_array)
     
-    # Flatten images to 1D vectors
+    #Flatten images to 1D vectors
     images = np.array(images).reshape(len(images), -1)
     
     return images, labels

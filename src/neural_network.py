@@ -1,6 +1,5 @@
 """
 Neural Network Implementation from Scratch
-==========================================
 Custom implementation of feedforward neural networks using NumPy and PyTorch tensors.
 Supports multi-class classification with configurable architectures.
 """
@@ -42,11 +41,11 @@ class NeuralNetwork:
         self.batch_size = batch_size
         self.use_torch = use_torch
         
-        # Architecture dimensions
+        #Architecture dimensions
         self.hidden1_size = int(input_dim * 0.3)
         self.hidden2_size = int(self.hidden1_size * 0.5)
         
-        # Initialize weights
+        #Initialize weights
         self._initialize_weights()
         
     def _initialize_weights(self):
@@ -98,15 +97,15 @@ class NeuralNetwork:
         Returns:
             Tuple of (output, intermediate_activations)
         """
-        # Layer 1
+        #Layer 1
         f1 = x @ self.W1
         a1 = self._relu(f1)
         
-        # Layer 2
+        #Layer 2
         f2 = a1 @ self.W2
         a2 = self._relu(f2)
         
-        # Output layer
+        #Output layer
         f3 = a2 @ self.W3
         output = self._sigmoid(f3)
         
@@ -127,22 +126,22 @@ class NeuralNetwork:
         """
         f1, a1, f2, a2, f3 = activations
         
-        # Output layer gradient
+        #Output layer gradient
         d3 = (output - y_onehot) * self._sigmoid_derivative(output)
         
-        # Hidden layer 2 gradient
+        #Hidden layer 2 gradient
         if self.use_torch:
             d2 = (d3 @ self.W3.T) * self._relu_derivative(f2)
         else:
             d2 = d3 @ self.W3.T * self._relu_derivative(f2)
         
-        # Hidden layer 1 gradient
+        #Hidden layer 1 gradient
         if self.use_torch:
             d1 = (d2 @ self.W2.T) * self._relu_derivative(f1)
         else:
             d1 = d2 @ self.W2.T * self._relu_derivative(f1)
         
-        # Compute weight gradients
+        #Compute weight gradients
         dW3 = a2.T @ d3
         dW2 = a1.T @ d2
         dW1 = x.T @ d1
@@ -175,7 +174,7 @@ class NeuralNetwork:
         n_samples = len(X_train)
         cost_history = []
         
-        # Create one-hot encoded labels
+        #Create one-hot encoded labels
         if self.use_torch:
             y_onehot = torch.zeros(n_samples, self.num_classes, dtype=torch.float64)
             y_onehot.scatter_(1, y_train.view(-1, 1), 1)
@@ -186,13 +185,13 @@ class NeuralNetwork:
         for epoch in range(epochs):
             total_cost = 0
             
-            # Shuffle data
+            #Shuffle data
             if self.use_torch:
                 indices = torch.randperm(n_samples)
             else:
                 indices = np.random.permutation(n_samples)
             
-            # Mini-batch training
+            #Mini-batch training
             for start in range(0, n_samples, self.batch_size):
                 end = min(start + self.batch_size, n_samples)
                 batch_idx = indices[start:end]
@@ -200,10 +199,10 @@ class NeuralNetwork:
                 x_batch = X_train[batch_idx]
                 y_batch = y_onehot[batch_idx]
                 
-                # Forward pass
+                #Forward pass
                 output, activations = self._forward_pass(x_batch)
                 
-                # Compute loss (binary cross-entropy)
+                #Compute loss (binary cross-entropy)
                 if self.use_torch:
                     output = torch.clamp(output, 1e-15, 1 - 1e-15)
                     cost = -torch.sum(y_batch * torch.log(output) + 
@@ -215,10 +214,10 @@ class NeuralNetwork:
                                   (1 - y_batch) * np.log(1 - output))
                     total_cost += cost
                 
-                # Backward pass
+                #Backward pass
                 dW1, dW2, dW3 = self._backward_pass(x_batch, y_batch, output, activations)
                 
-                # Update weights
+                #Update weights
                 batch_size_actual = end - start
                 self.W1 -= self.learning_rate * (dW1 / batch_size_actual)
                 self.W2 -= self.learning_rate * (dW2 / batch_size_actual)

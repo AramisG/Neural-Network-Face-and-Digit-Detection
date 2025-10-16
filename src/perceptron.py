@@ -1,6 +1,5 @@
 """
 Perceptron Classifier Implementation
-====================================
 Multi-class perceptron using the one-vs-all approach.
 """
 
@@ -67,20 +66,20 @@ class Perceptron:
         for epoch in range(self.max_epochs):
             mistakes = 0
             
-            # Iterate through each training example
+            #Iterate through each training example
             for i in range(n_samples):
                 x = X_train[i]
                 y_true = y_train[i]
                 
-                # Compute scores for all classes
+                #Compute scores for all classes
                 scores = self.weights @ x
                 y_pred = np.argmax(scores)
                 
-                # Update weights if prediction is wrong
+                #Update weights if prediction is wrong
                 if y_pred != y_true:
-                    # Move correct class weights toward input
+                    #Move correct class weights toward input
                     self.weights[y_true] += self.learning_rate * x
-                    # Move predicted class weights away from input
+                    #Move predicted class weights away from input
                     self.weights[y_pred] -= self.learning_rate * x
                     mistakes += 1
             
@@ -91,7 +90,6 @@ class Perceptron:
                 print(f"Epoch {epoch + 1}/{self.max_epochs} - "
                       f"Errors: {mistakes}/{n_samples} ({error_rate:.2%})")
             
-            # Early stopping if no mistakes
             if mistakes == 0:
                 if verbose:
                     print(f"Converged at epoch {epoch + 1}")
